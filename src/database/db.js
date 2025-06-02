@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("🟢 Conectado a MongoDB"))
-  .catch((err) => console.error("🔴 Error al conectar MongoDB:", err));
+const MONGO_URI = process.env.MONGO_URI;
+
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log("🔵 MongoDB conectado correctamente");
+}).catch((err) => {
+  console.error("🔴 Error al conectar MongoDB:", err);
+});
