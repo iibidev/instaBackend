@@ -78,7 +78,7 @@ export const userInfo = async(req, res) =>{
             seguido: user._id
         }) ? true : false;
 
-        const publicaciones = await Post.find({ id_usuario: user._id }).sort({ createdAt: -1 }); // Últimos posts primero
+        const publicaciones = await Post.find({ id_usuario: user._id }).sort({ fecha: -1 }); // Últimos posts primero
 
         const publicacionesConContadores = await Promise.all(
             publicaciones.map(async (post) => {
@@ -88,12 +88,14 @@ export const userInfo = async(req, res) =>{
               ]);
 
               const likeado = await LikePost.findOne({ id_post: post._id, id_usuario: req.uid }) ? true : false;
+              const perfil = await User.findById(user._id).select("-passwd -email").lean();
           
               return {
                 ...post.toObject(),
                 likes,
                 comentarios,
-                likeado
+                likeado,
+                perfil
               };
             })
           );
@@ -133,10 +135,7 @@ export const searchUser = async(req, res) =>{
 export const updateUser = async(req, res) =>{
     const updates = req.body;
   
-    try {
-        let user = await User.findOne({ usuario: updates.usuario });
-        if(user) return res.json({ ok: false, error: "Ese usuario ya existe." });
-        
+    try {        
         await User.findByIdAndUpdate(req.uid, updates, { new: true });
         res.json({ ok: true });
     } catch (err) {
