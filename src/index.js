@@ -14,7 +14,7 @@ import Message from "./models/Message.js";
 import User from "./models/User.js";
 const app = express();
 
-const urlFrontend = "https://insta-front-olive.vercel.app";
+const urlFrontend = "https://5mnqgtb0-4200.uks1.devtunnels.ms"; //https://insta-front-olive.vercel.app
 
 app.use(cors({
   origin: urlFrontend,
@@ -95,6 +95,17 @@ io.on("connection", (socket) => {
   socket.on("newReel", async({ reel, idChat, idMiembro }) => {
     try{
       const nuevoMensaje = await Message.create({ id_chat: idChat, id_usuario: socket.data.userId, msg: reel, tipo: "reel" });
+      io.to(idMiembro).to(socket.data.userId).emit("getMessage", nuevoMensaje);
+      enviarNotificacion(idMiembro, nuevoMensaje, socket.data.userId);
+    }catch(error){
+      console.log(error);
+      socket.emit("errorMessage");
+    }
+  });
+
+  socket.on("newPaint", async({ paint, idChat, idMiembro }) => {
+    try{
+      const nuevoMensaje = await Message.create({ id_chat: idChat, id_usuario: socket.data.userId, msg: paint, tipo: "paint" });
       io.to(idMiembro).to(socket.data.userId).emit("getMessage", nuevoMensaje);
       enviarNotificacion(idMiembro, nuevoMensaje, socket.data.userId);
     }catch(error){
