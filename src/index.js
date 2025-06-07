@@ -14,7 +14,7 @@ import Message from "./models/Message.js";
 import User from "./models/User.js";
 const app = express();
 
-const urlFrontend = "https://5mnqgtb0-4200.uks1.devtunnels.ms"; //https://insta-front-olive.vercel.app
+const urlFrontend = "https://insta-front-olive.vercel.app";
 
 app.use(cors({
   origin: urlFrontend,
